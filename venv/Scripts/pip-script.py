@@ -1,4 +1,4 @@
-#!C:\Users\LonelyCube\homepage\venv\Scripts\python.exe
+#!C:\Users\LonelyCube\Desktop\cs3300-hw4\reddit\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'pip==1.3.1','console_scripts','pip'
 __requires__ = 'pip==1.3.1'
 import sys

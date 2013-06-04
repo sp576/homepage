@@ -1,4 +1,4 @@
-#!C:\Users\LonelyCube\homepage\venv\Scripts\python.exe
+#!C:\Users\LonelyCube\Desktop\cs3300-hw4\reddit\venv\Scripts\python.exe
 # EASY-INSTALL-ENTRY-SCRIPT: 'distribute==0.6.34','console_scripts','easy_install-2.7'
 __requires__ = 'distribute==0.6.34'
 import sys
