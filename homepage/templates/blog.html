@@ -16,7 +16,7 @@
 		
 			<div class="jumbotron">
 				<h1>Welcome to Edward's homepage!</h1>
-					<div class="fb-like" data-href="http://127.0.0.1:8000/" data-send="false" data-layout="button_count" data-width="90" data-show-faces="false" data-font="arial"></div>
+					<div class="fb-like" data-href="http://limitless-falls-7440.herokuapp.com/" data-send="false" data-layout="button_count" data-width="90" data-show-faces="false" data-font="arial"></div>
 			</div>
 		
 
@@ -44,7 +44,7 @@
 							{{ post.content|safe }}
 						</p>
 						<hr />
-						<div class="fb-like" data-href="http://127.0.0.1:8000{{ post.get_absolute_url }}" data-send="false" data-layout="box_count" data-width="55" data-show-faces="false" data-font="arial"></div>
+						<div class="fb-like" data-href="http://limitless-falls-7440.herokuapp.com{ post.get_absolute_url }}" data-send="false" data-layout="box_count" data-width="55" data-show-faces="false" data-font="arial"></div>
 						<div class="num_comments">
 						{% for num_comment in num_comments %}
 							{% if forloop.parentloop.counter == forloop.counter %}
