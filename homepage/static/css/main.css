@@ -54,7 +54,7 @@ body {
 }
 
 .content .span10 {
-	background-color:purple;
+	border: 1ps solid black;
 }
 
 .content .span10 h2 {
