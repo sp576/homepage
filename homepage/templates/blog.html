@@ -1,0 +1,106 @@
+{% extends "header.html" %}
+
+{% block content %}
+	<div class="container">
+		<div class="masthead">
+			<ul class="nav nav-tabs pull-right">
+				<li><a href="..">Home</a></li>
+				<li><a href="/about">About</a></li>
+				<li class="active"><a href="#">Blog</a></li>
+				<li><a href="/projects">Projects</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+			<h2 class="logo">EDWARD PARK</h2>
+		</div>
+		<div class="row-fluid">
+		
+			<div class="jumbotron">
+				<h1>Welcome to Edward's homepage!</h1>
+					<div class="fb-like" data-href="http://127.0.0.1:8000/" data-send="false" data-layout="button_count" data-width="90" data-show-faces="false" data-font="arial"></div>
+			</div>
+		
+
+			<div class="container-fluid">
+		
+				<div class="span3">
+					<strong>Blog</strong>
+				</div>
+			<br />
+				<div class="row-fluid">
+
+					<div class="span10">
+					{% for post in posts %}					
+						<div class="blog_post">
+						<h2> {{ post.title }} </h2> 
+						<hr />
+						<p>
+							Date Posted: {{ post.date }} <br />
+							Slug: {{ post.category }} <br /><br />
+							{% if post.image %}
+							<img src="../media/{{ post.image }}" class="img-polaroid"/>
+							{% endif %}
+							<!-- filter 'linebreaks' so that 
+							mysql newline \r\n can be converted in to <br /> -->
+							{{ post.content|safe }}
+						</p>
+						<hr />
+						<div class="fb-like" data-href="http://127.0.0.1:8000{{ post.get_absolute_url }}" data-send="false" data-layout="box_count" data-width="55" data-show-faces="false" data-font="arial"></div>
+						<div class="num_comments">
+						{% for num_comment in num_comments %}
+							{% if forloop.parentloop.counter == forloop.counter %}
+								<a href="..{{post.get_absolute_url }}"><h5>{{ num_comment }} Comments</h5></a>
+							{% endif %}
+							{% endfor%}
+
+						</div>
+						</div>
+					{% endfor %}
+						<div class="pagination-centered">
+							<ul>
+								{% if num_posts > 5 %}
+								<li class="active"><a href="">1</a></li>
+								{% elif num_posts > 10 %}
+								<li><a href="">2</a></li>
+								{% elif num_posts > 15 %}
+								<li><a href="">3</a></li>
+								{% elif num_posts > 20 %}
+								<li><a href="">4</a></li>
+								{% elif num_posts > 25 %}
+								<li><a href="">Next</a></li>
+								{% endif %}
+							</ul>
+						</div>
+					</div>
+					<div class="span2">
+					{% load staticfiles %}
+						<img src="{% static 'img/big_fat_purple.png' %}" class="img-rounded"/>
+						<hr />
+						<p> <strong>Status</strong><br />
+						Hello Hello Hello
+						</p>
+						<hr />
+						{% if categories %}
+						<p>
+						<strong>Categories</strong>
+						</p>
+						<ul>
+							{% for category in categories %}
+							<li><a href="{{ category.get_absolute_url }}">{{ category.title }}</a></li>
+							{% endfor %}
+						</ul>
+						{% else %}
+							<p>
+								Date: {{current_datetime}}
+								No posts!
+							</p>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="footer">
+			<p>&copy; Sungho(Edward) Park 2013</p>
+		</div>
+	</div>
+{% endblock %}
