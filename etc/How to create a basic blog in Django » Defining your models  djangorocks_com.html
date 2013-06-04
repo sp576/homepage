@@ -1,0 +1,196 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0099)http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/defining-your-models.html -->
+<!DOCTYPE html PUBLIC "" ""><HTML lang="en"><HEAD><META content="IE=10.000" 
+http-equiv="X-UA-Compatible">
+
+<META charset="utf-8"><TITLE>How to create a basic blog in Django » Defining 
+your models | djangorocks.com</TITLE>
+<META name="description" content="How to create a basic blog in Django » Defining your models">
+<META name="keywords" content="How to create a basic blog in Django » Defining your models"><LINK 
+href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/bootstrap.css" 
+rel="stylesheet"><LINK href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/prettify.css" 
+rel="stylesheet" type="text/css"><LINK title="RSS" href="http://feeds2.feedburner.com/djangorocks-blog?format=xml" 
+rel="alternate" type="application/rss+xml">
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/prettify.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/mootools-yui-compressed.js" type="text/javascript"></SCRIPT>
+
+<META name="GENERATOR" content="MSHTML 10.00.9200.16578"></HEAD>
+<BODY>
+<DIV class="navbar navbar-fixed-top">
+<DIV class="navbar-inner">
+<DIV class="container-fluid"><A class="btn btn-navbar" data-target=".nav-collapse" 
+data-toggle="collapse"><SPAN class="i-bar"></SPAN><SPAN 
+class="i-bar"></SPAN><SPAN class="i-bar"></SPAN></A><A class="brand" href="http://www.djangorocks.com/">djangorocks.com</A>
+<P class="pull-right" style="margin: 4px 0px 0px 15px;"><A href="http://feeds.feedburner.com/djangorocks-blog" 
+rel="alternate" type="application/rss+xml"><IMG style="border: 0px currentColor; vertical-align: middle;" 
+alt="" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/feed-icon32x32.png"></A></P>
+<DIV class="nav-collapse">
+<FORM class="navbar-search pull-right" action="/search.html" method="get"><INPUT 
+name="q" class="search-query" type="text" placeholder="Search" 
+value=""></FORM></DIV></DIV></DIV></DIV>
+<DIV class="navbar subnav subnav-fixed">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<UL class="nav">
+  <LI><A href="http://www.djangorocks.com/">Home</A></LI>
+  <LI><A href="http://www.djangorocks.com/snippets/">Snippets </A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/">Tutorials</A></LI>
+  <LI><A href="http://www.djangorocks.com/recommended-reading/">Recommended 
+  Reading</A></LI>
+  <LI><A 
+href="http://www.djangorocks.com/about.html">About</A></LI></UL></DIV></DIV></DIV>
+<DIV class="container-fluid">
+<DIV class="row-fluid">
+<DIV class="span12">
+<DIV class="page-header">
+<H1>How to create a basic blog in Django » Defining your 
+models</H1></DIV></DIV></DIV>
+<DIV class="row-fluid">
+<DIV class="span8">
+<P>The model is your database structure. Lets start by opening the 
+<CODE>models.py</CODE> file, and start adding some fields. Because I am keeping 
+this simple, I will not be including users at this stage.</P>
+<PRE class="prettyprint lang-python"><CODE>class Blog(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
+    body = models.TextField()
+    posted = models.DateField(db_index=True, auto_now_add=True)
+    category = models.ForeignKey('blog.Category')
+
+class Category(models.Model):
+    title = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, db_index=True)
+</CODE></PRE>
+<P><STRONG>Now lets see what each part means.</STRONG>
+<P>
+<P>This creates a database table with the name "Blog". This need to be something 
+obvious and will be used a lot. </P>
+<PRE class="prettyprint lang-python"><CODE>class Blog(models.Model):</CODE></PRE>
+<P>These are basic fields to be created in your database</P>
+<PRE class="prettyprint lang-python"><CODE>title = models.CharField(max_length=100, db_index=True)
+slug = models.SlugField(max_length=100, db_index=True)
+body = models.TextField()
+posted = models.DateTimeField(db_index=True, auto_now_add=True)
+</CODE></PRE>
+<P>The last field, a little more advanced. This field populates its data from 
+another database table, in this case Category, so you will need to populate the 
+Category table field first. 
+<P>
+<PRE class="prettyprint lang-python"><CODE>category = models.ForeignKey('blog.Category')</CODE></PRE>
+<P><STRONG>Finish the model</STRONG>
+<P>There are a few more things to be added to the model now that we have decided 
+on the database structure. Your completed model file should look as follows. 
+<P>
+<PRE class="prettyprint lang-python"><CODE>from django.db import models
+from django.db.models import permalink
+
+# Create your models here.
+
+class Blog(models.Model):
+    title = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=100, unique=True)
+    body = models.TextField()
+    posted = models.DateTimeField(db_index=True, auto_now_add=True)
+    category = models.ForeignKey('blog.Category')
+
+    def __unicode__(self):
+        return '%s' % self.title
+
+    @permalink
+    def get_absolute_url(self):
+        return ('view_blog_post', None, { 'slug': self.slug })
+
+class Category(models.Model):
+    title = models.CharField(max_length=100, db_index=True)
+    slug = models.SlugField(max_length=100, db_index=True)
+
+    def __unicode__(self):
+        return '%s' % self.title
+
+    @permalink
+    def get_absolute_url(self):
+        return ('view_blog_category', None, { 'slug': self.slug })
+</CODE></PRE>
+<P><STRONG>What are all these extras for?</STRONG>
+<P>
+<P>The <CODE>__unicode__</CODE> function sets the text reference for each 
+record. This is used mainly in the automated django admin, but this is still 
+available to use on your own site.</P>
+<P>The <CODE>get_absolute_url</CODE> function defines a URL, again used in the 
+admin area, for each record. </P>
+<P>Without the <CODE>@permalink</CODE> decorator the following would not work. 
+This returns a URL calculated from the <CODE>urls.py</CODE> file which will be 
+explained shortly. I would recommend using this method as it allows you to 
+change the URL for a page in only one location.</P>
+<PRE class="prettyprint lang-python"><CODE>return ('view_blog_post', None, { 'slug': self.slug })</CODE></PRE>
+<P><STRONG>Example</STRONG></P>
+<P>Title: <EM>How to create a basic blog in django</EM><BR>Response from 
+<CODE>__unicode__</CODE>: <EM>How to create a basic blog in django</EM><BR>
+Response from <CODE>get_absolute_url</CODE>: 
+<EM>/blog/view/how-to-create-a-basic-blog-in-django.html</EM></P>
+<P><STRONG>Limitations from this example</STRONG></P>
+<UL>
+  <LI>Blog has a field slug. This is used as the URL to identify the post. In 
+  this case both the title &amp; slug field are set to unique. It is not 
+  unreasonable to have two posts with the same Title. To solve this you could 
+  set the slug field to contain the ID of the post ie. 2-my-second-post</LI>
+  <LI>This example allows only one category per post. This is quite simple to 
+  change by adding a <CODE>ManyToMany</CODE> field type to category instead of 
+  <CODE>ForeignKey</CODE>. The way you use this is sligthly different, so it 
+  will not work without other changes to this tutorial.
+  <HR>
+  </LI></UL></DIV>
+<DIV class="span4">
+<DIV class="well">
+<H3>How to create a basic blog in Django</H3>
+<OL>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/starting-your-application.html">Starting 
+  your application</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/defining-your-models.html">Defining 
+  your models</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/configuring-the-automatic-admin.html">Configuring 
+  the automatic admin</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-views-defining-your-urls.html">Writing 
+  the views &amp; Defining your URL's</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-templates.html">Writing 
+  the templates</A></LI></OL></DIV>
+<DIV class="well" style="text-align: center;">
+<SCRIPT type="text/javascript"><!--
+google_ad_client = "ca-pub-5756306424544427";
+/* DjangoRocks 2012 - Right */
+google_ad_slot = "9195649073";
+google_ad_width = 336;
+google_ad_height = 280;
+//--></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/show_ads.js" type="text/javascript"></SCRIPT>
+</DIV></DIV></DIV>
+<HR>
+</DIV>
+<DIV class="navbar navbar-fixed-bottom">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<P class="pull-right">This site is in no way affiliated with Django or the 
+Django Software Foundation. <A href="http://www.linode.com/?r=102543297b682fb0cc1640d6b15b1f7384bc74bb"><IMG 
+title="Hosted with Linode" alt="Linode" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/linode-80x15.png"></A> 
+&nbsp; <A href="http://feeds.feedburner.com/djangorocks-blog" 
+target="_blank"><IMG style="border: 0px currentColor;" alt="Powered by FeedBurner" 
+src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Defining%20your%20models%20%20djangorocks_com_files/powered_by_fb.gif"></A></P>
+<P>© DjangoRocks.com 2009 - 2013</P></DIV></DIV></DIV>
+<SCRIPT type="text/javascript">
+        function inject_script(url) {var s = document.createElement('script');s.type = 'text/javascript';s.async = true;s.src = url;(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);}var disqus_shortname = 'djangorocks';var disqus_developer = 1;if(document.getElementById('disqus_thread')) {inject_script('http://' + disqus_shortname + '.disqus.com/embed.js');}inject_script('http://' + disqus_shortname + '.disqus.com/count.js');var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-485141-5']);_gaq.push(['_trackPageview']);inject_script(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+        $$('a[href^=http://]','a[href^=https://]').each(function(ele){
+            ele.set('target','_blank');
+            ele.addEvent('click',function(e){
+                try{
+                    var _pageTracker=_gat._getTracker("UA-485141-5");
+                    _pageTracker._trackEvent('Outbound Link',ele.get('href'));
+                }catch(err){
+                
+                }
+            });
+        });
+        prettyPrint();
+    </SCRIPT>
+ </BODY></HTML>

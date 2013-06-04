@@ -1,1 +1,1 @@
-web: gunicorn homepage:app
+web: gunicorn homepage.wsgi

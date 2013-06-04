@@ -1,0 +1,195 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0115)http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-views-defining-your-urls.html -->
+<!DOCTYPE html PUBLIC "" ""><HTML lang="en"><HEAD><META content="IE=10.000" 
+http-equiv="X-UA-Compatible">
+
+<META charset="utf-8"><TITLE>How to create a basic blog in Django » Writing the 
+views &amp; Defining your URL's | djangorocks.com</TITLE>
+<META name="description" content="How to create a basic blog in Django » Writing the views &amp; Defining your URL's">
+<META name="keywords" content="How to create a basic blog in Django » Writing the views &amp; Defining your URL's"><LINK 
+href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/bootstrap.css" 
+rel="stylesheet"><LINK href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/prettify.css" 
+rel="stylesheet" type="text/css"><LINK title="RSS" href="http://feeds2.feedburner.com/djangorocks-blog?format=xml" 
+rel="alternate" type="application/rss+xml">
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/prettify.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/mootools-yui-compressed.js" type="text/javascript"></SCRIPT>
+
+<META name="GENERATOR" content="MSHTML 10.00.9200.16578"></HEAD>
+<BODY>
+<DIV class="navbar navbar-fixed-top">
+<DIV class="navbar-inner">
+<DIV class="container-fluid"><A class="btn btn-navbar" data-target=".nav-collapse" 
+data-toggle="collapse"><SPAN class="i-bar"></SPAN><SPAN 
+class="i-bar"></SPAN><SPAN class="i-bar"></SPAN></A><A class="brand" href="http://www.djangorocks.com/">djangorocks.com</A>
+<P class="pull-right" style="margin: 4px 0px 0px 15px;"><A href="http://feeds.feedburner.com/djangorocks-blog" 
+rel="alternate" type="application/rss+xml"><IMG style="border: 0px currentColor; vertical-align: middle;" 
+alt="" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/feed-icon32x32.png"></A></P>
+<DIV class="nav-collapse">
+<FORM class="navbar-search pull-right" action="/search.html" method="get"><INPUT 
+name="q" class="search-query" type="text" placeholder="Search" 
+value=""></FORM></DIV></DIV></DIV></DIV>
+<DIV class="navbar subnav subnav-fixed">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<UL class="nav">
+  <LI><A href="http://www.djangorocks.com/">Home</A></LI>
+  <LI><A href="http://www.djangorocks.com/snippets/">Snippets </A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/">Tutorials</A></LI>
+  <LI><A href="http://www.djangorocks.com/recommended-reading/">Recommended 
+  Reading</A></LI>
+  <LI><A 
+href="http://www.djangorocks.com/about.html">About</A></LI></UL></DIV></DIV></DIV>
+<DIV class="container-fluid">
+<DIV class="row-fluid">
+<DIV class="span12">
+<DIV class="page-header">
+<H1>How to create a basic blog in Django » Writing the views &amp; Defining your 
+URL's</H1></DIV></DIV></DIV>
+<DIV class="row-fluid">
+<DIV class="span8">
+<P>The view is where you do all the logic to be sent to your templates. In this 
+example we will not be dealing with <CODE>RequestContext</CODE>. This would give 
+you access to the <CODE>request</CODE> object which contains details for the 
+currently logged in user, as well as a few other features you will be likely to 
+use in the future.</P>
+<P>For this example we need to create 3 views.</P>
+<UL>
+  <LI>Display your categories &amp; latest posts</LI>
+  <LI>Display the posts in a specific category</LI>
+  <LI>Display the post</LI></UL>
+<P>Here is a copy of the <CODE>view.py</CODE>.</P>
+<PRE class="prettyprint lang-python"><CODE># Create your views here.
+
+from djangorocks.blog.models import Blog, Category
+from django.shortcuts import render_to_response, get_object_or_404
+
+def index(request):
+    return render_to_response('index.html', {
+        'categories': Category.objects.all(),
+        'posts': Blog.objects.all()[:5]
+    })
+
+def view_post(request, slug):   
+    return render_to_response('view_post.html', {
+        'post': get_object_or_404(Blog, slug=slug)
+    })
+
+def view_category(request, slug):
+    category = get_object_or_404(Category, slug=slug)
+    return render_to_response('view_category.html', {
+        'category': category,
+        'posts': Blog.objects.filter(category=category)[:5]
+    })
+</CODE></PRE>
+<P>As with the <CODE>admin.py</CODE> file we need to import the models.</P>
+<PRE class="prettyprint lang-python"><CODE>from djangorocks.blog.models import Blog, Category</CODE></PRE>
+<P>We also need to import a couple of functions for displaying our template.</P>
+<PRE class="prettyprint lang-python"><CODE>from django.shortcuts import render_to_response, get_object_or_404</CODE></PRE>
+<P>The following is for your index page, which will display a list of all your 
+categories, and 5 most recent posts.</P>
+<P>When defining functions, you always need to specify the variable 
+<CODE>request</CODE>. This is the request object, which contains details of the 
+User, POST &amp; GET data as well as a few other bits. In the following instance 
+we are also specifying <CODE>slug</CODE> which is mapped to from the 
+<CODE>urls.py</CODE> file as you will see in a minute</P>
+<PRE class="prettyprint lang-python"><CODE>def view_category(request, slug):</CODE></PRE>
+<P>This first part sets the template file that we are going to be using.</P>
+<PRE class="prettyprint lang-python"><CODE>render_to_response('test.html', {</CODE></PRE>
+<P>The next part queries the database for both categories and posts. 
+<CODE>Category</CODE> and <CODE>Blog</CODE> are the names of the models we 
+created earlier.</P>
+<PRE class="prettyprint lang-python"><CODE>'categories': Category.objects.all(),
+'posts': Blog.objects.all()[:5]</CODE></PRE>
+<P>In the other two functions <CODE>view_post</CODE> &amp; 
+<CODE>view_category</CODE> we use one of the rather useful Django shortcuts. 
+This queries the database trying to match where <CODE>slug=slug</CODE>, the 
+first <CODE>slug</CODE> being the field in the model, the second 
+<CODE>slug</CODE> being the input into the function call, more on this in a 
+second when we define the URL's.</P>
+<PRE class="prettyprint lang-python"><CODE>get_object_or_404(Blog, slug=slug)</CODE></PRE>
+<H3>Defining your URLs</H3>
+<P>Open up the <CODE>urls.py</CODE> located in your project folder, add the 
+following 3 lines.</P>
+<PRE class="prettyprint lang-python"><CODE>(r'^$', 'djangorocks.blog.views.index'),
+url(
+    r'^blog/view/(?P&lt;slug&gt;[^\.]+).html', 
+    'djangorocks.blog.views.view_post', 
+    name='view_blog_post'),
+url(
+    r'^blog/category/(?P&lt;slug&gt;[^\.]+).html', 
+    'djangorocks.blog.views.view_category', 
+    name='view_blog_category'),
+</CODE></PRE>
+<P>The first URL match is just a simple match nothing, ie 
+http://www.yourdomain.com/, and mapping that through to the view 
+<CODE>index</CODE>. The second two have custom variables being passed to the 
+view. There are just regular expressions with the parameter matching syntax of 
+django.</P>
+<PRE><CODE>(?P&lt;slug&gt;[^\.]+)
+</CODE></PRE>
+<P>As I always use the .html extension on my URL's this works fine for me. This 
+matches everything up to '.', there are other ways of doing this, and it maps 
+the result to <CODE>slug</CODE> which is also the name of a parameter in the 
+<CODE>view_post</CODE> and <CODE>view_category</CODE> functions.</P>
+<P>The final part labeled <CODE>name</CODE> is what we used when defining the 
+models. <CODE>get_absolute_url</CODE> returns a URL automatically calculated 
+based on the URL that is entered here. Defining this just once means that if you 
+change the mapping URL, it will also change throughout the site. You are also 
+able to use the template tag that Django provides to do a similar thing, however 
+this is not used in our example.</P>
+<HR>
+</DIV>
+<DIV class="span4">
+<DIV class="well">
+<H3>How to create a basic blog in Django</H3>
+<OL>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/starting-your-application.html">Starting 
+  your application</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/defining-your-models.html">Defining 
+  your models</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/configuring-the-automatic-admin.html">Configuring 
+  the automatic admin</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-views-defining-your-urls.html">Writing 
+  the views &amp; Defining your URL's</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-templates.html">Writing 
+  the templates</A></LI></OL></DIV>
+<DIV class="well" style="text-align: center;">
+<SCRIPT type="text/javascript"><!--
+google_ad_client = "ca-pub-5756306424544427";
+/* DjangoRocks 2012 - Right */
+google_ad_slot = "9195649073";
+google_ad_width = 336;
+google_ad_height = 280;
+//--></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/show_ads.js" type="text/javascript"></SCRIPT>
+</DIV></DIV></DIV>
+<HR>
+</DIV>
+<DIV class="navbar navbar-fixed-bottom">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<P class="pull-right">This site is in no way affiliated with Django or the 
+Django Software Foundation. <A href="http://www.linode.com/?r=102543297b682fb0cc1640d6b15b1f7384bc74bb"><IMG 
+title="Hosted with Linode" alt="Linode" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/linode-80x15.png"></A> 
+&nbsp; <A href="http://feeds.feedburner.com/djangorocks-blog" 
+target="_blank"><IMG style="border: 0px currentColor;" alt="Powered by FeedBurner" 
+src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20views%20&amp;%20Defining%20your%20URL's%20%20djangorocks_com_files/powered_by_fb.gif"></A></P>
+<P>© DjangoRocks.com 2009 - 2013</P></DIV></DIV></DIV>
+<SCRIPT type="text/javascript">
+        function inject_script(url) {var s = document.createElement('script');s.type = 'text/javascript';s.async = true;s.src = url;(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);}var disqus_shortname = 'djangorocks';var disqus_developer = 1;if(document.getElementById('disqus_thread')) {inject_script('http://' + disqus_shortname + '.disqus.com/embed.js');}inject_script('http://' + disqus_shortname + '.disqus.com/count.js');var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-485141-5']);_gaq.push(['_trackPageview']);inject_script(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+        $$('a[href^=http://]','a[href^=https://]').each(function(ele){
+            ele.set('target','_blank');
+            ele.addEvent('click',function(e){
+                try{
+                    var _pageTracker=_gat._getTracker("UA-485141-5");
+                    _pageTracker._trackEvent('Outbound Link',ele.get('href'));
+                }catch(err){
+                
+                }
+            });
+        });
+        prettyPrint();
+    </SCRIPT>
+ </BODY></HTML>

@@ -1,0 +1,211 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0100)http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-templates.html -->
+<!DOCTYPE html PUBLIC "" ""><HTML lang="en"><HEAD><META content="IE=10.000" 
+http-equiv="X-UA-Compatible">
+
+<META charset="utf-8"><TITLE>How to create a basic blog in Django » Writing the 
+templates | djangorocks.com</TITLE>
+<META name="description" content="How to create a basic blog in Django » Writing the templates">
+<META name="keywords" content="How to create a basic blog in Django » Writing the templates"><LINK 
+href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/bootstrap.css" 
+rel="stylesheet"><LINK href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/prettify.css" 
+rel="stylesheet" type="text/css"><LINK title="RSS" href="http://feeds2.feedburner.com/djangorocks-blog?format=xml" 
+rel="alternate" type="application/rss+xml">
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/prettify.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/mootools-yui-compressed.js" type="text/javascript"></SCRIPT>
+
+<META name="GENERATOR" content="MSHTML 10.00.9200.16578"></HEAD>
+<BODY>
+<DIV class="navbar navbar-fixed-top">
+<DIV class="navbar-inner">
+<DIV class="container-fluid"><A class="btn btn-navbar" data-target=".nav-collapse" 
+data-toggle="collapse"><SPAN class="i-bar"></SPAN><SPAN 
+class="i-bar"></SPAN><SPAN class="i-bar"></SPAN></A><A class="brand" href="http://www.djangorocks.com/">djangorocks.com</A>
+<P class="pull-right" style="margin: 4px 0px 0px 15px;"><A href="http://feeds.feedburner.com/djangorocks-blog" 
+rel="alternate" type="application/rss+xml"><IMG style="border: 0px currentColor; vertical-align: middle;" 
+alt="" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/feed-icon32x32.png"></A></P>
+<DIV class="nav-collapse">
+<FORM class="navbar-search pull-right" action="/search.html" method="get"><INPUT 
+name="q" class="search-query" type="text" placeholder="Search" 
+value=""></FORM></DIV></DIV></DIV></DIV>
+<DIV class="navbar subnav subnav-fixed">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<UL class="nav">
+  <LI><A href="http://www.djangorocks.com/">Home</A></LI>
+  <LI><A href="http://www.djangorocks.com/snippets/">Snippets </A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/">Tutorials</A></LI>
+  <LI><A href="http://www.djangorocks.com/recommended-reading/">Recommended 
+  Reading</A></LI>
+  <LI><A 
+href="http://www.djangorocks.com/about.html">About</A></LI></UL></DIV></DIV></DIV>
+<DIV class="container-fluid">
+<DIV class="row-fluid">
+<DIV class="span12">
+<DIV class="page-header">
+<H1>How to create a basic blog in Django » Writing the 
+templates</H1></DIV></DIV></DIV>
+<DIV class="row-fluid">
+<DIV class="span8">
+<P></P>
+<P>The templating system in django is extremely powerful, we will only be using 
+a small handful of its functionality in this example.</P>
+<P>Firstly, lets create our base template. This is just a very basic example, 
+which is not valid XHTML. This template alone doesn't do a great deal.</P>
+<P><CODE>base.html</CODE></P>
+<PRE class="prettyprint lang-html"><CODE>&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;{% block head_title %}Welcome to my blog{% endblock %}&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;h1&gt;{% block title %}Welcome to my block{% endblock %}&lt;/h1&gt;
+        {% block content %}
+
+        {% endblock %}
+    &lt;/body&gt;
+&lt;/html&gt;</CODE></PRE>
+<P><CODE>index.html</CODE></P>
+<PRE class="prettyprint lang-html"><CODE>{% extends 'base.html' %}
+{% block title %}Welcome to my blog{% endblock %}
+
+{% block content %}
+    &lt;h2&gt;Categories&lt;/h2&gt;
+    {% if categories %}
+        &lt;ul&gt;
+        {% for category in categories %}
+            &lt;li&gt;&lt;a href="{{ category.get_absolute_url }}"&gt;{{ category.title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+        &lt;/ul&gt;
+    {% else %}
+        &lt;p&gt;There are no posts.&lt;/p&gt;
+    {% endif %}
+
+    &lt;h2&gt;Posts&lt;/h2&gt;
+    {% if posts %}
+        &lt;ul&gt;
+        {% for post in posts %}
+            &lt;li&gt;&lt;a href="{{ post.get_absolute_url }}"&gt;{{ post.title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+        &lt;/ul&gt;
+    {% else %}
+        &lt;p&gt;There are no posts.&lt;/p&gt;
+    {% endif %}
+
+{% endblock %}</CODE></PRE>
+<P><CODE>view_post.html</CODE></P>
+<PRE class="prettyprint lang-html"><CODE>{% extends 'base.html' %} 
+{% block head_title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+    {{ post.body }}
+{% endblock %}</CODE></PRE>
+<P><CODE>view_category.html</CODE></P>
+<PRE class="prettyprint lang-html"><CODE>{% extends 'base.html' %} 
+{% block head_title %}Viewing category {{ category.title }}{% endblock %}
+{% block title %}{{ category.title }}{% endblock %}
+
+{% block content %}
+    {% if posts %}
+        &lt;ul&gt;
+        {% for post in posts %}
+            &lt;li&gt;&lt;a href="{{ post.get_absolute_url }}"&gt;{{ post.title }}&lt;/a&gt;&lt;/li&gt;
+        {% endfor %}
+        &lt;/ul&gt;
+    {% else %}
+        &lt;p&gt;There are no posts.&lt;/p&gt;
+    {% endif %}
+{% endblock %}</CODE></PRE>
+<H3>So, what does all this do?</H3>
+<P>In the <CODE>base.html</CODE> we are defining the base content, 
+<CODE>&lt;html&gt;</CODE>, <CODE>&lt;body&gt;</CODE> etc, as well as the blocks 
+we would like to display. The content for these is output based on the content 
+that extends the base template.</P>
+<P>On the first line of all three of the other files you will notice</P>
+<PRE class="prettyprint lang-html"><CODE>{% extends 'base.html' %}</CODE></PRE>
+<P>This line calls the <CODE>base.html</CODE> template file. Inside this we 
+define the blocks very much the same way as in the <CODE>base.html</CODE> file, 
+however this time we add the content we want to display. Using the example from 
+<CODE>index.html</CODE></P>
+<P>We define the block for content,</P>
+<PRE class="prettyprint lang-html"><CODE>{% block content %}
+    ...
+{% endblock %}</CODE></PRE>
+<P>Inside here we are checking if there are an categories. The variables we use 
+here were defined in the <CODE>views.py</CODE> file in the 
+<CODE>render_to_response</CODE> function.</P>
+<PRE><CODE>{% if categories %}
+    ....
+{% else %}
+    &lt;p&gt;There are no posts.&lt;/p&gt;
+{% endif %}</CODE></PRE>
+<P>If there are categories, the following is run</P>
+<PRE class="prettyprint lang-html"><CODE>&lt;ul&gt;
+    {% for category in categories %}
+        &lt;li&gt;&lt;a href="{{ category.get_absolute_url }}"&gt;{{ category.title }}&lt;/a&gt;&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;</CODE></PRE>
+<P>This will loop the response from the <CODE>Category</CODE> model as defined 
+in <CODE>views.py</CODE>, and print out the results that are entered into the 
+database.</P>
+<P>Now that you have a rather basic blog working, or at least I hope so, you 
+might want to check out one of our more advanced tutorials, or have a browse of 
+the <A href="http://www.djangorocks.com/snippets/">Hints &amp; Tips 
+section</A>.</P>
+<P></P>
+<HR>
+</DIV>
+<DIV class="span4">
+<DIV class="well">
+<H3>How to create a basic blog in Django</H3>
+<OL>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/starting-your-application.html">Starting 
+  your application</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/defining-your-models.html">Defining 
+  your models</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/configuring-the-automatic-admin.html">Configuring 
+  the automatic admin</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-views-defining-your-urls.html">Writing 
+  the views &amp; Defining your URL's</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-templates.html">Writing 
+  the templates</A></LI></OL></DIV>
+<DIV class="well" style="text-align: center;">
+<SCRIPT type="text/javascript"><!--
+google_ad_client = "ca-pub-5756306424544427";
+/* DjangoRocks 2012 - Right */
+google_ad_slot = "9195649073";
+google_ad_width = 336;
+google_ad_height = 280;
+//--></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/show_ads.js" type="text/javascript"></SCRIPT>
+</DIV></DIV></DIV>
+<HR>
+</DIV>
+<DIV class="navbar navbar-fixed-bottom">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<P class="pull-right">This site is in no way affiliated with Django or the 
+Django Software Foundation. <A href="http://www.linode.com/?r=102543297b682fb0cc1640d6b15b1f7384bc74bb"><IMG 
+title="Hosted with Linode" alt="Linode" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/linode-80x15.png"></A> 
+&nbsp; <A href="http://feeds.feedburner.com/djangorocks-blog" 
+target="_blank"><IMG style="border: 0px currentColor;" alt="Powered by FeedBurner" 
+src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Writing%20the%20templates%20%20djangorocks_com_files/powered_by_fb.gif"></A></P>
+<P>© DjangoRocks.com 2009 - 2013</P></DIV></DIV></DIV>
+<SCRIPT type="text/javascript">
+        function inject_script(url) {var s = document.createElement('script');s.type = 'text/javascript';s.async = true;s.src = url;(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);}var disqus_shortname = 'djangorocks';var disqus_developer = 1;if(document.getElementById('disqus_thread')) {inject_script('http://' + disqus_shortname + '.disqus.com/embed.js');}inject_script('http://' + disqus_shortname + '.disqus.com/count.js');var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-485141-5']);_gaq.push(['_trackPageview']);inject_script(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+        $$('a[href^=http://]','a[href^=https://]').each(function(ele){
+            ele.set('target','_blank');
+            ele.addEvent('click',function(e){
+                try{
+                    var _pageTracker=_gat._getTracker("UA-485141-5");
+                    _pageTracker._trackEvent('Outbound Link',ele.get('href'));
+                }catch(err){
+                
+                }
+            });
+        });
+        prettyPrint();
+    </SCRIPT>
+ </BODY></HTML>

@@ -1,0 +1,155 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!-- saved from url=(0110)http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/configuring-the-automatic-admin.html -->
+<!DOCTYPE html PUBLIC "" ""><HTML lang="en"><HEAD><META content="IE=10.000" 
+http-equiv="X-UA-Compatible">
+
+<META charset="utf-8"><TITLE>How to create a basic blog in Django » Configuring 
+the automatic admin | djangorocks.com</TITLE>
+<META name="description" content="How to create a basic blog in Django » Configuring the automatic admin">
+<META name="keywords" content="How to create a basic blog in Django » Configuring the automatic admin"><LINK 
+href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/bootstrap.css" 
+rel="stylesheet"><LINK href="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/prettify.css" 
+rel="stylesheet" type="text/css"><LINK title="RSS" href="http://feeds2.feedburner.com/djangorocks-blog?format=xml" 
+rel="alternate" type="application/rss+xml">
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/prettify.js" type="text/javascript"></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/mootools-yui-compressed.js" type="text/javascript"></SCRIPT>
+
+<META name="GENERATOR" content="MSHTML 10.00.9200.16578"></HEAD>
+<BODY>
+<DIV class="navbar navbar-fixed-top">
+<DIV class="navbar-inner">
+<DIV class="container-fluid"><A class="btn btn-navbar" data-target=".nav-collapse" 
+data-toggle="collapse"><SPAN class="i-bar"></SPAN><SPAN 
+class="i-bar"></SPAN><SPAN class="i-bar"></SPAN></A><A class="brand" href="http://www.djangorocks.com/">djangorocks.com</A>
+<P class="pull-right" style="margin: 4px 0px 0px 15px;"><A href="http://feeds.feedburner.com/djangorocks-blog" 
+rel="alternate" type="application/rss+xml"><IMG style="border: 0px currentColor; vertical-align: middle;" 
+alt="" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/feed-icon32x32.png"></A></P>
+<DIV class="nav-collapse">
+<FORM class="navbar-search pull-right" action="/search.html" method="get"><INPUT 
+name="q" class="search-query" type="text" placeholder="Search" 
+value=""></FORM></DIV></DIV></DIV></DIV>
+<DIV class="navbar subnav subnav-fixed">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<UL class="nav">
+  <LI><A href="http://www.djangorocks.com/">Home</A></LI>
+  <LI><A href="http://www.djangorocks.com/snippets/">Snippets </A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/">Tutorials</A></LI>
+  <LI><A href="http://www.djangorocks.com/recommended-reading/">Recommended 
+  Reading</A></LI>
+  <LI><A 
+href="http://www.djangorocks.com/about.html">About</A></LI></UL></DIV></DIV></DIV>
+<DIV class="container-fluid">
+<DIV class="row-fluid">
+<DIV class="span12">
+<DIV class="page-header">
+<H1>How to create a basic blog in Django » Configuring the automatic 
+admin</H1></DIV></DIV></DIV>
+<DIV class="row-fluid">
+<DIV class="span8">
+<P>In many of your own applications you will probably want to write your own 
+administration functions, you will completely miss out this section.</P>
+<P>Create <CODE>admin.py</CODE> in blog folder we created earlier. This 
+<CODE>admin.py</CODE> file is automatically checked by django admin for every 
+application defined under <CODE>INSTALLED_APPS</CODE> in the 
+<CODE>settings.py</CODE></P>
+<PRE class="prettyprint lang-python"><CODE>from django.contrib import admin
+from blog.models import Blog, Category
+
+admin.site.register(Blog)
+admin.site.register(Category)</CODE></PRE>
+<P><STRONG>Now lets see what each part means.</STRONG></P>
+<P>Import the command which allows us to register the model we created</P>
+<PRE class="prettyprint lang-python"><CODE>from django.contrib import admin
+</CODE></PRE>
+<P>Import our models</P>
+<PRE class="prettyprint lang-python"><CODE>from blog.models import Blog, Category</CODE></PRE>
+<P>Register our models <CODE>Blog</CODE> &amp; <CODE>Category</CODE> with the 
+admin</P>
+<PRE class="prettyprint lang-python"><CODE>admin.site.register(Blog)
+admin.site.register(Category)</CODE></PRE>
+<P>Although these three lines are enough to get the admin working, we want to 
+add a little more functionality. Heres the final <CODE>admin.py</CODE>.</P>
+<PRE class="prettyprint lang-python"><CODE>from django.contrib import admin
+from djangorocks.blog.models import Blog, Category
+
+class BlogAdmin(admin.ModelAdmin):
+    exclude = ['posted']
+    prepopulated_fields = {'slug': ('title',)}
+
+class CategoryAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('title',)}
+
+admin.site.register(Blog, BlogAdmin)
+admin.site.register(Category, CategoryAdmin)
+</CODE></PRE>
+<P>Now that you have added these models into the admin, you might want to login 
+and add a few categories and blog posts.</P>
+<H4>Limitations from this example</H4>
+<UL>
+  <LI>The <CODE>prepopulated_fields</CODE> are exactly as they sound. The data 
+  for the <CODE>slug</CODE> field is automatically populated by the data entered 
+  in the to <CODE>title</CODE> field. Remember this ONLY works in the django 
+  admin so if you are not using this, the slug field will not be populated.</LI>
+  <LI>The <CODE>excluded</CODE> field in this instance again is automatically 
+  populated with the date it was created. Remember this ONLY works in the django 
+  admin so if you are not using this, the date field will not be 
+populated.</LI></UL>
+<P>A good way to solve these problems is to update your models with a 
+<CODE>save</CODE> function.</P>
+<HR>
+</DIV>
+<DIV class="span4">
+<DIV class="well">
+<H3>How to create a basic blog in Django</H3>
+<OL>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/starting-your-application.html">Starting 
+  your application</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/defining-your-models.html">Defining 
+  your models</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/configuring-the-automatic-admin.html">Configuring 
+  the automatic admin</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-views-defining-your-urls.html">Writing 
+  the views &amp; Defining your URL's</A></LI>
+  <LI><A href="http://www.djangorocks.com/tutorials/how-to-create-a-basic-blog-in-django/writing-the-templates.html">Writing 
+  the templates</A></LI></OL></DIV>
+<DIV class="well" style="text-align: center;">
+<SCRIPT type="text/javascript"><!--
+google_ad_client = "ca-pub-5756306424544427";
+/* DjangoRocks 2012 - Right */
+google_ad_slot = "9195649073";
+google_ad_width = 336;
+google_ad_height = 280;
+//--></SCRIPT>
+
+<SCRIPT src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/show_ads.js" type="text/javascript"></SCRIPT>
+</DIV></DIV></DIV>
+<HR>
+</DIV>
+<DIV class="navbar navbar-fixed-bottom">
+<DIV class="navbar-inner">
+<DIV class="container-fluid">
+<P class="pull-right">This site is in no way affiliated with Django or the 
+Django Software Foundation. <A href="http://www.linode.com/?r=102543297b682fb0cc1640d6b15b1f7384bc74bb"><IMG 
+title="Hosted with Linode" alt="Linode" src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/linode-80x15.png"></A> 
+&nbsp; <A href="http://feeds.feedburner.com/djangorocks-blog" 
+target="_blank"><IMG style="border: 0px currentColor;" alt="Powered by FeedBurner" 
+src="How%20to%20create%20a%20basic%20blog%20in%20Django%20»%20Configuring%20the%20automatic%20admin%20%20djangorocks_com_files/powered_by_fb.gif"></A></P>
+<P>© DjangoRocks.com 2009 - 2013</P></DIV></DIV></DIV>
+<SCRIPT type="text/javascript">
+        function inject_script(url) {var s = document.createElement('script');s.type = 'text/javascript';s.async = true;s.src = url;(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(s);}var disqus_shortname = 'djangorocks';var disqus_developer = 1;if(document.getElementById('disqus_thread')) {inject_script('http://' + disqus_shortname + '.disqus.com/embed.js');}inject_script('http://' + disqus_shortname + '.disqus.com/count.js');var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-485141-5']);_gaq.push(['_trackPageview']);inject_script(('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js');
+        $$('a[href^=http://]','a[href^=https://]').each(function(ele){
+            ele.set('target','_blank');
+            ele.addEvent('click',function(e){
+                try{
+                    var _pageTracker=_gat._getTracker("UA-485141-5");
+                    _pageTracker._trackEvent('Outbound Link',ele.get('href'));
+                }catch(err){
+                
+                }
+            });
+        });
+        prettyPrint();
+    </SCRIPT>
+ </BODY></HTML>
