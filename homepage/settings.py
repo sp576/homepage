@@ -75,7 +75,7 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 	#"C:/users/lonelycube/homepage/static/",
 	#"http://limitless-falls-7440.herokuapp.com/static/",
-	os.path.join(PROJECT_ROOT,'static/'),
+	os.path.join(SITE_ROOT,'static/'),
 )
 
 # List of finder classes that know how to find static files in
