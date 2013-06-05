@@ -2,21 +2,23 @@ body {
 	font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Helvetica', 'Arial', 'Verdana', 'sans-serif';
 	background-image:url("../img/9.png");
 	background-repeat: repeat;
+	color:#5c5c5c;
+	font-size:15px;
 }
 .container {
 	margin-top: 60px;
-	max-width: 1200px;
+	width: 1200px;
 }
 
 .logo {
 	font-size:56px;
-	color: white;
+	color: #b1e6eb;
 	margin-bottom:0px;
-	text-shadow: -2px 0 #292929, 5px 2px #292929, 2px 0 #292929, 0 -2px #292929;
+	text-shadow: -1px 0 #777878, 5px 1px 5px #777878, 1px 0 #777878, 0 -1px #777878;
 	font-family: 'Calibri';
 }
 .jumbotron {
-	background-image:url("../img/8.png");
+	background-image:url("../img/background-trees.jpg");
 	/*background-color: rgb(222,220,221);*/
 	text-align: center;
 	margin-top: 0;
@@ -190,9 +192,10 @@ textarea {
 	padding-right: 20px;
 }
 
-.jumbotron > .fb-like{
-	float:right;
-	margin-right:60px;
+.main-like{
+	margin-top: 10px;
+	margin-left: 1000px;
+	margin-right: 60px;
 }
 
 .invisible {

@@ -28,7 +28,7 @@ def view_post(request, slug):
 	else:
 		form = ParentInlineFormSet(instance=post)
 		#form = CommentForm()
-	comments = Comment.objects.filter(parent=post)
+	comments = Comment.objects.filter(parent=post).order_by('-date')
 	return render_to_response('view_post.html',{'categories':Category.objects.all(),'post':post,'comments':comments,'form':form}, context_instance=RequestContext(request))
 
 def view_category(request, slug):
