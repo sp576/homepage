@@ -18,7 +18,7 @@ body {
 	font-family: 'Calibri';
 }
 .jumbotron {
-	background-image:url("../img/background-trees.jpg");
+	background-image:url("../img/8.png");
 	/*background-color: rgb(222,220,221);*/
 	text-align: center;
 	margin-top: 0;
@@ -43,6 +43,7 @@ body {
 	background-color: white;
 	min-height: 900px;
 }
+
 .content .span3 {
 	margin-top: 40px;
 	height: 40px;
@@ -191,11 +192,23 @@ textarea {
 	padding-left: 20px;
 	padding-right: 20px;
 }
-
+.blog_title{
+	color:#424242;
+}
+.comment{
+	border: 1px solid gray;
+}
+.comment_head{
+	border-bottom:1px solid gray;
+	background-color: #b6b6b6;
+	padding: 10px;
+}
+.comment_body{
+	padding: 10px;
+}
 .main-like{
 	margin-top: 10px;
-	margin-left: 1000px;
-	margin-right: 60px;
+	margin-left: 1100px;
 }
 
 .invisible {
