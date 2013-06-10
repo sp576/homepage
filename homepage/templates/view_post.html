@@ -34,7 +34,7 @@
 						<hr />
 						<p>
 							Date Posted: {{ post.date }} <br />
-							Slug: {{ post.category }} <br /><br />
+							Category: {{ post.category }} <br /><br />
 							{% if post.image %}
 							<img src="../media/{{ post.image }}" class="img-polaroid"/>
 							{% endif %}
@@ -69,8 +69,8 @@
 							<label>Comment:</label>{{ f.content }}
 								</div>
 								<div class="span12">
-							<input type="submit" value="Submit" class="btn btn-primary"/>
-							<input type="reset" value="Reset" class="btn"/>
+							<input type="submit" value="Submit" class="btn btn-success"/>
+							<input type="reset" value="Reset" class="btn btn-danger"/>
 							</div>
 						</form>
 							</div>

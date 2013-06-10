@@ -3,10 +3,9 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.http import HttpResponseRedirect
 from django.forms.models import inlineformset_factory
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def blog(request):
-	all_posts = Posts.objects.all().order_by('-date')
+	all_posts = Posts.objects.all().order_by('-date')[:5]
 	num_comment_list = list()
 	# Paginating blog posts. 
 	# 5 blog posts per page.
@@ -23,7 +22,7 @@ def blog(request):
 	except EmptyPage:
 		# If page is out of range, deliver last page of results
 		blog_posts = paginator.page(paginator.num_pages)
-	return render_to_response('blog.html',{'categories' : Category.objects.all(), 'posts':blog_posts,'num_posts':Posts.objects.count(), 'num_comments':num_comment_list})
+	return render_to_response('blog.html',{'categories' : Category.objects.all(), 'posts':all_posts,'num_posts':Posts.objects.count(), 'num_comments':num_comment_list, 'blog_posts':blog_posts})
 
 def view_post(request, slug):
 	post = get_object_or_404(Posts,slug=slug)
@@ -46,9 +45,4 @@ def view_post(request, slug):
 
 def view_category(request, slug):
 	c = get_object_or_404(Category, slug=slug)
-	posts = Posts.objects.filter(category=c).order_by('-date')
-	num_comment_list = list()
-	for post in posts:
-		num_post = Comment.objects.filter(parent=post).count()
-		num_comment_list.append(num_post)
-	return render_to_response('view_category.html',{'categories':Category.objects.all(),'category':c,'posts':posts,'comments':num_comment_list})
+	return render_to_response('view_category.html',{'category':c,'posts':Posts.objects.filter(category=c).order_by('-date')})
